@@ -1,0 +1,16 @@
+Matrix Market
+
+23 2nd St, Techtown, TT
+
+122-123-124
+Receipt: 43002 Date: 02/04/2020
+‘S.No tem Description Items Cost.
+1 Office Renovation 1 2000.00
+2 Furniture Upgrade 1 800.00
+3 Painting Service 1 300.00
+5.15
+115
+115
+
+Total Tax: 1299.10
+

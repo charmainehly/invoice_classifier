@@ -1,0 +1,18 @@
+Widget Workshop
+
+26 Oak St, Techtown, TT
+
+125-126-127
+
+Receipt: 123810 Date: 06/12/2023
+‘S.No tem Description Items Cost.
+1 Data Security Solutions 1 600.00
+2 Firewall Software Subscri 1 200.00
+3 Encryption Tools 1 150.00
+
+5.15
+115
+115
+
+1299.10
+

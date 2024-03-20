@@ -1,0 +1,21 @@
+Data Deli
+
+22 Pine Rd, Gadgetville, TT
+
+121-122-123
+Receipt: 20123 Date: 05/01/2022
+
+‘S.No tem Description Items Cost
+
+1 Monthly Payroll 1 5000.00
+
+2 Employee Benefits 1 1000.00
+
+3 Overtime Pay 1 300.00
+
+5.15
+115
+115
+
+1299.10
+

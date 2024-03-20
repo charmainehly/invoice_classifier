@@ -1,0 +1,21 @@
+Matrix Market
+
+30 Elm St, Gadgetville, TT
+
+129-130-131
+Receipt: 76678 Date: 03/01/2023
+
+‘S.No tem Description Items Cost
+
+1 Team Building Event Exp 1 1000.00
+
+2 Office Party Catering 1 ‘400.00
+
+3 EntertainmentTickets 2 150.00
+
+5.15
+115
+115
+
+1299.10
+

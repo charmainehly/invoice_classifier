@@ -1,0 +1,16 @@
+Byte Bakery
+
+13 2nd St, Techtown, TT
+
+112-113-114
+Receipt: 31434 Date: 07/01/2022
+‘S.No tem Description Items Cost.
+1 Electricity Bill 1 200.00
+2 Internet Service 1 80.00
+3 Water Bill 1 50.00
+Tax: 5.15
+Gs 115
+SST: 115
+
+Total Tax: 1299.10
+

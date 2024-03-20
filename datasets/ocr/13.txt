@@ -1,0 +1,21 @@
+Prism Provisions
+
+11 Maple Rd, Techtown, TT
+
+110-111-112,
+Receipt: 73305 Date: 08/07/2023
+
+‘S.No tem Description Items Cost.
+
+1 Gasoline Expense 1 100.00
+
+2 Public Transportation Tiel 2 50.00
+
+3 Taxi Rides 1 30.00
+
+5.15
+115
+115
+
+1299.10
+

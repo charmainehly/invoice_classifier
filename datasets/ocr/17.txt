@@ -1,0 +1,21 @@
+Prism Provisions
+
+11 Maple Rd, Techtown, TT
+
+110-111-112,
+Receipt: 44167 Date: 05/01/2021
+
+‘S.No tem Description Items Cost.
+
+1 Business Travel Expensi. 1 500.00
+
+2 Hotel Accommodation 2 200.00
+
+3 Rental Car 1 80.00
+
+5.15
+115
+115
+
+1299.10
+

@@ -1,0 +1,21 @@
+Binary Books
+
+‘Maple Rd, Techtown, TT
+
+100-101-102
+Receipt: 87989 Date: 05/01/2023
+
+‘S.No tem Description Items Cost.
+
+1 Employee Health Insurar 1 300.00
+
+2 Dental Insurance 1 100.00
+
+3 Vision Insurance 1 80.00
+
+5.15
+115
+115
+
+1299.10
+
