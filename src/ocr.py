@@ -1,14 +1,10 @@
 '''
 https://nanonets.com/blog/ocr-with-tesseract/
 '''
-import ast
 import os
-import csv
 import pandas as pd
 import pytesseract
 import cv2
-import sys
-import subprocess
 from PIL import Image, PpmImagePlugin
 
 # set this to your own tesseract file path
