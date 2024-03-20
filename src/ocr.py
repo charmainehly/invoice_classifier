@@ -6,12 +6,13 @@ import os
 import csv
 import pandas as pd
 import pytesseract
-import cv2 
+import cv2
 import sys
 import subprocess
 from PIL import Image, PpmImagePlugin
 
-pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract' # set this to your own tesseract file path
+# set this to your own tesseract file path
+pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract'
 SAVE_FILE_PATH = './datasets/ocr/'
 PNGS_DIR_PATH = "./datasets/sample_images/"
 
@@ -28,10 +29,9 @@ def extract_invoice_items() -> list:
         if filename.endswith('.png'):
             img = cv2.imread(PNGS_DIR_PATH+filename)
             ocr_outputs = extract_raw_text(img)
-            write_txt_to_file(ocr_outputs, str(index)+'.txt') # logging
+            write_txt_to_file(ocr_outputs, filename + '.txt')  # logging
 
         index += 1
-
 
     return ocr_outputs
 
@@ -46,7 +46,6 @@ def write_txt_to_file(txt: list, file_name: str) -> None:
     with open(save_name, 'w') as file:
         # Write the string to the file
         file.write(txt)
-
 
     return None
 
