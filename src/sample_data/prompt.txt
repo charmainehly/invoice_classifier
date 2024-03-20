@@ -1,0 +1,14 @@
+# Prompt used to generate sample data for invoices
+
+'''
+help me create 30 sets of sample data to generate fake invoices for a business for testing an ML OCR reader. I need sample data in the following format:
+[[
+            ('S.No', 'Item Description', 'Items', 'Cost'),
+            ('1', 'Chocolate Cake(1 Kg) ', '1', '895.00'),
+            ('2', 'Flower Bookie', '1', '500.50'),
+            ('3', 'Rat Poisen(500ml)', '1', ' 50.50')
+]]
+where every list in the list consist of the exact same first line "('S.No', 'Item Description', 'Items', 'Cost')", and then between 1 to 5 other items containing the S.No, Item Description, Items (which is the item number), and the total cost.
+
+Ensure that the item description contains items that fall into one of these categories, but do not include the category name itself in the line item: Payroll & Benefits, Office & Utilities, Marketing & Advertising, Office Supplies & Equip., Travel & Transport, Professional Services, Insurance, Repairs & Maintenance, Software & Subscriptions, Food
+'''
