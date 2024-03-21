@@ -2,23 +2,16 @@
 https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
 '''
 import os
-from dotenv import load_dotenv
 import openai
+import pandas as pd
+from dotenv import load_dotenv
+from io import StringIO
 
 load_dotenv()
 openai.api_key = os.getenv('API_KEY')
 
 
 def format_raw_text(prompt: str) -> str:
-    """
-    Function for generating a chat-based completion using the OpenAI API.
-
-    Args:
-        prompt (str): The user's message or prompt.
-
-    Returns:
-        str: The assistant's reply.
-    """
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -81,30 +74,7 @@ def format_raw_text(prompt: str) -> str:
                 '''
              },
             {"role": "user",
-             "content":
-             # prompt
-                '''
-                Innovate Ice Cream
-
-                ‘4th Ave, Code Cove, TT
-
-                103-104-105
-                Receipt: 54056 Date: 11/01/2022
-
-                ‘S.No tem Description Items Cost.
-
-                1 ‘SEO Optimization Servic 1 400.00
-
-                2 ‘Social Media Marketing 1 300.00
-
-                3 Content Writing Service 1 200.00
-
-                5.15
-                115
-                115
-
-                1299.10
-                '''
+             "content": prompt
              }
         ]
     )
@@ -113,9 +83,20 @@ def format_raw_text(prompt: str) -> str:
     return reply
 
 
-def process_to_csv(text: str) -> None:
-    pass
+def process_to_df(csv_text: str) -> pd.DataFrame:
+    df = pd.read_csv(StringIO(csv_text))
+    validate_csv_format(df)
+    return df
 
+def validate_csv_format(df: pd.DataFrame) -> None:
+    '''
+    check that the dataframe has all the necessary columns. Convert the necessary columns to numerical data.
+    '''
+    return ######
+
+def save_df(df: pd.DataFrame, filename: str) -> None:
+    df.to_csv("./datasets/db/"+filename)
+    return
 
 if __name__ == "__main__":
     file_path = "./datasets/ocr/"
@@ -126,9 +107,11 @@ if __name__ == "__main__":
         filename = files[index]
         
         if filename.endswith('.txt'):
-            txt = ""# read each txt from file
+            with open(file_path+filename, 'r') as file:
+                txt = file.read()
             csv_txt = format_raw_text(txt)
-            process_to_csv(csv_txt)
-            
+            df = process_to_df(csv_txt)
+            save_df(df, filename+".csv")
+
         index += 1
     
