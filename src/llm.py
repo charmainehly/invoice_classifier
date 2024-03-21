@@ -92,6 +92,12 @@ def validate_csv_format(df: pd.DataFrame) -> None:
     '''
     check that the dataframe has all the necessary columns. Convert the necessary columns to numerical data.
     '''
+    required_columns = ['Store Name','Address','Contact','Invoice No.','Date','Item Description','Count','Total Cost']
+    if # ensure all required columns are present
+
+
+    # convert numerical columns to float (count and total cost)
+
     return ######
 
 def save_df(df: pd.DataFrame, filename: str) -> None:
