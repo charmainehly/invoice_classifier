@@ -6,6 +6,7 @@ import openai
 import pandas as pd
 from dotenv import load_dotenv
 from io import StringIO
+import uuid
 
 load_dotenv()
 openai.api_key = os.getenv('API_KEY')
@@ -93,9 +94,7 @@ def validate_csv_format(df: pd.DataFrame) -> None:
     check that the dataframe has all the necessary columns. Convert the necessary columns to numerical data.
     '''
     required_columns = ['Store Name','Address','Contact','Invoice No.','Date','Item Description','Count','Total Cost']
-    if # ensure all required columns are present
-
-
+    # ensure all required columns are present
     # convert numerical columns to float (count and total cost)
 
     return ######
@@ -103,6 +102,19 @@ def validate_csv_format(df: pd.DataFrame) -> None:
 def save_df(df: pd.DataFrame, filename: str) -> None:
     df.to_csv("./datasets/db/"+filename)
     return
+
+def parse_to_df(txt, filename=None) -> dict:
+    csv_txt = format_raw_text(txt)
+    df = process_to_df(csv_txt)
+
+    if filename is None:
+        save_df(df, str(uuid.uuid4())+".csv")
+    else:
+        save_df(df, filename+".csv")
+
+    return df.to_dict()
+
+############################################################################################
 
 if __name__ == "__main__":
     file_path = "./datasets/ocr/"
@@ -115,9 +127,7 @@ if __name__ == "__main__":
         if filename.endswith('.txt'):
             with open(file_path+filename, 'r') as file:
                 txt = file.read()
-            csv_txt = format_raw_text(txt)
-            df = process_to_df(csv_txt)
-            save_df(df, filename+".csv")
+            parse_to_df(txt, filename)
 
         index += 1
     
