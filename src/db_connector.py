@@ -1,4 +1,5 @@
 import sqlite3
+from tags import Tag
 
 def connect_db():
     con = sqlite3.connect("invoices.db")
@@ -20,8 +21,19 @@ def close_db(con) -> None:
     con.close()
     return 
 
-def query_db():
-    return
+def query_db(cur, invoice_id: str, tag: Tag):
+    # ## TODO: to implement
+    # match tag:
+    #     case ITEMS:
+    #         res = cur.execute("SELECT score FROM invoices")
+
+    #         ##
+    #     case DATE:
+    #         ##
+    #     case SUMMARY:
+    #         ##
+    
+    # return res.fetchall()
 
 def insert_db(con, cur, df) -> None:
     for index, row in df.iterrows():

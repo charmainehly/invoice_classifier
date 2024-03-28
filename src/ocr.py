@@ -1,21 +1,22 @@
 '''
 https://nanonets.com/blog/ocr-with-tesseract/
 '''
-import os
-import json
-import io
-import tempfile
-import uuid
-import pandas as pd
-import pytesseract
-import cv2
 from PIL import Image, PpmImagePlugin
+import cv2
+import pytesseract
+import pandas as pd
+import uuid
+import tempfile
+import io
+import json
+import os
 
 
 # set this to your own tesseract file path
 pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract'
-SAVE_FILE_PATH = './datasets/ocr/'
-PNGS_DIR_PATH = "./datasets/sample_images/"
+SAVE_FILE_PATH = '../datasets/ocr/'
+PNGS_DIR_PATH = "../datasets/sample_images/"
+
 
 def extract_invoices_multiple() -> list:
     """
@@ -33,6 +34,7 @@ def extract_invoices_multiple() -> list:
         index += 1
 
     return ocr_outputs
+
 
 def extract_invoice_single(contents) -> str:
     fd, temp_file_path = tempfile.mkstemp()

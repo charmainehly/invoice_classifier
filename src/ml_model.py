@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# # Using elasticsearch fuzzy match and machine learning methods to categorise short text descriptions
 
 # Prerequisites:
 # - setup virtual env: `python -m venv <your_new_virtual_environment_name>`

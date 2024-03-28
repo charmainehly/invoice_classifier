@@ -3,20 +3,32 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from ocr import extract_invoice_single
 from llm import parse_to_df
+from db_connector import query_db, connect_db, close_db
+from tags import Tag
 
 app = FastAPI()
 
 # GET APIs
 @app.get("/invoice/{invoice_id}/items") # get invoice items details
 async def get_invoice_items(invoice_id: str):
+    con, cur = connect_db()
+    query_db(con, invoice_id, Tag.ITEMS)
+    close_db()
     return {"message": "Hello World"} # fix return value
 
 @app.get("/invoice/{invoice_id}/date") # get invoice date
 async def get_invoice_date(invoice_id: str):
+    con, cur = connect_db()
+    query_db(con, invoice_id, Tag.DATE)
+    close_db()
+
     return {"message": "Hello World"} # fix return value
 
 @app.get("/invoice/{invoice_id}/summary") # get invoice summary - i.e. address, number, date
 async def get_invoice_details(invoice_id: str):
+    con, cur = connect_db()
+    query_db(con, invoice_id, Tag.SUMMARY)
+    close_db()
     return {"message": "Hello World"} # fix return value
 
 # POST APIs
@@ -30,6 +42,5 @@ async def process_image_inputs(file: UploadFile = File(...)):
         txt = extract_invoice_single(contents)
         summary = parse_to_df(txt)
 
-        return {"filename": file.filename,
-                "summary": summary}
+        return {"filename": file.filename}
     

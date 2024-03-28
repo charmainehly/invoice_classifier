@@ -8,12 +8,10 @@ from io import BytesIO
 
 client = TestClient(app)
 
-# Define test cases
-
 
 def test_process_image_inputs_with_file():
     # Prepare a sample image file
-    image_path = os.path.join("./datasets", "sample_images", "sample_5.png")
+    image_path = os.path.join("../datasets", "sample_images", "sample_5.png")
 
     with open(image_path, "rb") as f:
         files = {'file': ("sample_5.png", f)}
