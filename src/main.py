@@ -32,15 +32,16 @@ async def get_invoice_details(invoice_id: str):
     return {"message": "Hello World"} # fix return value
 
 # POST APIs
-@app.post("/process_image_inputs/")
+@app.post("/process_image_inputs/", status_code=201)
 async def process_image_inputs(file: UploadFile = File(...)):
     contents = await file.read()
 
     if not file:
-        return {"message": "No upload file sent"}
+        raise HTTPException(status_code=400, detail="Bad Request")
     else:
         txt = extract_invoice_single(contents)
         summary = parse_to_df(txt)
 
-        return {"filename": file.filename}
+        return {"filename": file.filename,
+                "detail": "Created Successfully."}
     

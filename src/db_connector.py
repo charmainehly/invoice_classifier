@@ -23,17 +23,18 @@ def close_db(con) -> None:
 
 def query_db(cur, invoice_id: str, tag: Tag):
     # ## TODO: to implement
-    # match tag:
-    #     case ITEMS:
-    #         res = cur.execute("SELECT score FROM invoices")
-
-    #         ##
-    #     case DATE:
-    #         ##
-    #     case SUMMARY:
-    #         ##
+    match tag:
+        case Tag.ITEMS:
+            res = cur.execute("SELECT score FROM invoices")
+            ##
+        case Tag.DATE:
+            res = cur.execute("SELECT score FROM invoices")
+            ##
+        case Tag.SUMMARY:
+            res = cur.execute("SELECT score FROM invoices")
+            ##
     
-    # return res.fetchall()
+    return res.fetchall()
 
 def insert_db(con, cur, df) -> None:
     for index, row in df.iterrows():
