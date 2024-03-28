@@ -22,7 +22,6 @@ def close_db(con) -> None:
     return 
 
 def query_db(cur, invoice_id: str, tag: Tag):
-    # ## TODO: to implement
     match tag:
         case Tag.ITEMS:
             res = cur.execute('''SELECT item_description, count, total_cost 
