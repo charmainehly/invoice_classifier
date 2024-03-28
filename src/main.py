@@ -30,5 +30,6 @@ async def process_image_inputs(file: UploadFile = File(...)):
         txt = extract_invoice_single(contents)
         summary = parse_to_df(txt)
 
-        return {"filename": file.filename}
+        return {"filename": file.filename,
+                "summary": summary}
     

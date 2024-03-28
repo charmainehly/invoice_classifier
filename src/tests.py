@@ -16,7 +16,7 @@ def test_process_image_inputs_with_file():
     image_path = os.path.join("./datasets", "sample_images", "sample_5.png")
 
     with open(image_path, "rb") as f:
-        files = {'file': ('sample.png', f)}
+        files = {'file': ("sample_5.png", f)}
 
         # Make a request to the API
         response = client.post("/process_image_inputs/", files=files)

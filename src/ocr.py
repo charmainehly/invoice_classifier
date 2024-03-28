@@ -5,15 +5,12 @@ import os
 import json
 import io
 import tempfile
-import subprocess
-import sys
 import uuid
 import pandas as pd
 import pytesseract
 import cv2
 from PIL import Image, PpmImagePlugin
 
-# subprocess.check_call([sys.executable, "-m", "pip", "install", "pytest"])
 
 # set this to your own tesseract file path
 pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract'
@@ -31,7 +28,7 @@ def extract_invoices_multiple() -> list:
         if filename.endswith('.png'):
             img = cv2.imread(PNGS_DIR_PATH+filename)
             ocr_outputs = extract_raw_text(img)
-            write_txt_to_file(ocr_outputs, filename + '.txt')  # logging
+            # write_txt_to_file(ocr_outputs, filename + '.txt')  # logging
 
         index += 1
 
@@ -46,7 +43,7 @@ def extract_invoice_single(contents) -> str:
     ocr_outputs = extract_raw_text(img)
     os.remove(temp_file_path)
 
-    write_txt_to_file(ocr_outputs, str(uuid.uuid4()) + ".txt")  # logging
+    # write_txt_to_file(ocr_outputs, str(uuid.uuid4()) + ".txt")  # logging
 
     return ocr_outputs
 
@@ -79,7 +76,6 @@ def extract_raw_text(image: PpmImagePlugin.PpmImageFile) -> str:
 
     return txt
 
-############################################################################################
 
-# if __name__ == "__main__":
-#     extract_invoices_multiple()
+if __name__ == "__main__":
+    extract_invoices_multiple()

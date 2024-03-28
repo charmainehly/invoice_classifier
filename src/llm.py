@@ -7,6 +7,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from io import StringIO
 import uuid
+from db_connector import connect_db, close_db, insert_db
 
 load_dotenv()
 openai.api_key = os.getenv('API_KEY')
@@ -65,10 +66,10 @@ def format_raw_text(prompt: str) -> str:
 
                 Example Output 1:
                 """
-                Store Name,Address,Contact,Invoice No.,Date,Item Description,Count,Total Cost,,
-                Gadget Galleria,"5 Oak St, Binaryburg, TT",104-105-106,93670,09/01/2020,Chocolate Cake(1 Kg),1,895.00,,
-                Gadget Galleria,"5 Oak St, Binaryburg, TT",104-105-106,93670,09/01/2020,Flower Bookie,1,500.50,,
-                Gadget Galleria,"5 Oak St, Binaryburg, TT",104-105-106,93670,09/01/2020,Rat Poisen(S00m!),1,50.50,,
+                Store Name,Address,Contact,Invoice No.,Date,Item Description,Count,Total Cost,
+                Gadget Galleria,"5 Oak St, Binaryburg, TT",104-105-106,93670,09/01/2020,Chocolate Cake(1 Kg),1,895.00,
+                Gadget Galleria,"5 Oak St, Binaryburg, TT",104-105-106,93670,09/01/2020,Flower Bookie,1,500.50,
+                Gadget Galleria,"5 Oak St, Binaryburg, TT",104-105-106,93670,09/01/2020,Rat Poisen(S00m!),1,50.50,
                 """
                 
                 -------------------------------------------
@@ -99,22 +100,20 @@ def validate_csv_format(df: pd.DataFrame) -> None:
 
     return ######
 
-def save_df(df: pd.DataFrame, filename: str) -> None:
-    df.to_csv("./datasets/db/"+filename)
+def save_df_db(df: pd.DataFrame) -> None:
+    con, cur = connect_db()
+    insert_db(con, cur, df)
+    close_db(con)
+
     return
 
 def parse_to_df(txt, filename=None) -> dict:
     csv_txt = format_raw_text(txt)
     df = process_to_df(csv_txt)
+    save_df_db(df)
 
-    if filename is None:
-        save_df(df, str(uuid.uuid4())+".csv")
-    else:
-        save_df(df, filename+".csv")
+    return df.to_json()
 
-    return df.to_dict()
-
-############################################################################################
 
 if __name__ == "__main__":
     file_path = "./datasets/ocr/"
