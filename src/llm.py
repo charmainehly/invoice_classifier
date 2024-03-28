@@ -107,16 +107,16 @@ def save_df_db(df: pd.DataFrame) -> None:
 
     return
 
-def parse_to_df(txt, filename=None) -> dict:
+def parse_to_df(txt, filename=None) -> pd.DataFrame:
     csv_txt = format_raw_text(txt)
     df = process_to_df(csv_txt)
     save_df_db(df)
 
-    return df.to_json()
+    return df
 
 
 if __name__ == "__main__":
-    file_path = "./datasets/ocr/"
+    file_path = "../datasets/ocr/"
     files = os.listdir(file_path)
     index = 0
     

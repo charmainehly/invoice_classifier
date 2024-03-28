@@ -3,8 +3,9 @@ import os
 import requests
 import numpy as np
 from fastapi.testclient import TestClient
-from main import app  # Import your FastAPI app instance
 from io import BytesIO
+from main import app  # Import your FastAPI app instance
+
 
 client = TestClient(app)
 
@@ -20,10 +21,10 @@ def test_process_image_inputs_with_file():
         response = client.post("/process_image_inputs/", files=files)
 
     # Assert the response status code is 200
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # Assert response body contains expected keys
-    assert "filename" in response.json()
+    assert "invoice_id" in response.json()
 
 # def test_process_image_inputs_no_file():
 #     # Make a request to the API without attaching a file

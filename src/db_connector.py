@@ -25,14 +25,19 @@ def query_db(cur, invoice_id: str, tag: Tag):
     # ## TODO: to implement
     match tag:
         case Tag.ITEMS:
-            res = cur.execute("SELECT score FROM invoices")
-            ##
+            res = cur.execute('''SELECT item_description, count, total_cost 
+                        FROM invoices 
+                        WHERE invoice_no = ?''', (invoice_id,))
         case Tag.DATE:
-            res = cur.execute("SELECT score FROM invoices")
-            ##
+            res = cur.execute('''SELECT date 
+                        FROM invoices 
+                        WHERE invoice_no = ?''', (invoice_id,))
         case Tag.SUMMARY:
-            res = cur.execute("SELECT score FROM invoices")
-            ##
+            res = cur.execute('''SELECT store_name, address, contact
+                        FROM invoices 
+                        WHERE invoice_no = ?''', (invoice_id,))
+
+    print(res.fetchall()) # logging
     
     return res.fetchall()
 
