@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 from tags import Tag
 
 def connect_db():
@@ -15,7 +16,7 @@ def connect_db():
                     total_cost REAL
             )''')
     con.commit()
-    return con, cur
+    return con
 
 def close_db(con) -> None:
     con.close()
@@ -40,7 +41,8 @@ def query_db(cur, invoice_id: str, tag: Tag):
     
     return res.fetchall()
 
-def insert_db(con, cur, df) -> None:
+def insert_db(con, df: pd.DataFrame) -> None:
+    cur = con.cursor()
     for index, row in df.iterrows():
         cur.execute('''INSERT INTO invoices (store_name, address, contact, invoice_no, date, item_description, count, total_cost)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 

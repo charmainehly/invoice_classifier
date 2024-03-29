@@ -7,7 +7,6 @@ import pandas as pd
 from dotenv import load_dotenv
 from io import StringIO
 import uuid
-from db_connector import connect_db, close_db, insert_db
 
 load_dotenv()
 openai.api_key = os.getenv('API_KEY')
@@ -100,17 +99,9 @@ def validate_csv_format(df: pd.DataFrame) -> None:
 
     return ######
 
-def save_df_db(df: pd.DataFrame) -> None:
-    con, cur = connect_db()
-    insert_db(con, cur, df)
-    close_db(con)
-
-    return
-
 def parse_to_df(txt, filename=None) -> pd.DataFrame:
     csv_txt = format_raw_text(txt)
     df = process_to_df(csv_txt)
-    save_df_db(df)
 
     return df
 
