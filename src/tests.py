@@ -89,8 +89,6 @@ def test_get_invoice_summary_200(initialize_app):
     assert "contact" in response.json()
 
 # POST api - success
-
-
 def test_process_image_inputs_with_file(initialize_app):
     # Prepare a sample image file
     client, conn = initialize_app
