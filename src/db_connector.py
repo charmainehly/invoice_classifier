@@ -66,3 +66,12 @@ def convert_to_json(res, cur):
 
     # Serialize the results into JSON
     return json.dumps(results)
+
+def query_column(con, tag: Tag):
+    cur = con.cursor()
+    match tag:
+        case Tag.INVOICE:
+            cur.execute('''SELECT invoice_no
+                        FROM invoices''')
+
+    return [value[0] for value in cur.fetchall()]

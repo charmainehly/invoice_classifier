@@ -6,9 +6,6 @@ import numpy as np
 from fastapi.testclient import TestClient
 from main import app  # Import FastAPI app instance
 
-# Function to create the dummy SQLite3 database
-
-
 def create_dummy_database():
     conn = sqlite3.connect(":memory:", check_same_thread=False)
     c = conn.cursor()
@@ -38,7 +35,6 @@ def create_dummy_database():
     conn.commit()
     return conn
 
-
 @pytest.fixture(scope="session", autouse=True)
 def initialize_app():
     with TestClient(app) as client:
@@ -48,8 +44,8 @@ def initialize_app():
     conn.close()
 
 
-# GET apis - successes
-def test_get_invoice_items(initialize_app):
+# GET apis - success
+def test_get_invoice_items_200(initialize_app):
     client, conn = initialize_app
     app.state.db_connection = conn
 
@@ -60,8 +56,17 @@ def test_get_invoice_items(initialize_app):
     assert "count" in response.json()
     assert "total_cost" in response.json()
 
-# GET apis - successes
-def test_get_invoice_date(initialize_app):
+# GET apis - fail (404)
+def test_get_invoice_item_404(initialize_app):
+    client, conn = initialize_app
+    app.state.db_connection = conn
+
+    response = client.get("/invoice/404/items")
+
+    assert response.status_code == 404
+
+# GET apis - success
+def test_get_invoice_date_200(initialize_app):
     client, conn = initialize_app
     app.state.db_connection = conn
 
@@ -71,8 +76,8 @@ def test_get_invoice_date(initialize_app):
     assert "date" in response.json()
 
 
-# GET apis - successes
-def test_get_invoice_summary(initialize_app):
+# GET apis - success
+def test_get_invoice_summary_200(initialize_app):
     client, conn = initialize_app
     app.state.db_connection = conn
 

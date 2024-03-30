@@ -3,7 +3,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from contextlib import asynccontextmanager
 from ocr import extract_invoice_single
 from llm import parse_to_df
-from db_connector import query_db, connect_db, close_db, insert_db
+from db_connector import query_db, connect_db, close_db, insert_db, query_column
 from tags import Tag
 
 # not sure if running
@@ -20,15 +20,21 @@ app = FastAPI(lifespan=lifespan)
 # GET APIs
 @app.get("/invoice/{invoice_id}/items", status_code=200) # get invoice items details
 async def get_invoice_items(invoice_id: str):
-    con = app.state.db_connection
-    res = query_db(con, invoice_id, Tag.ITEMS)
+    if invoice_id not in query_column(app.state.db_connection, Tag.INVOICE):
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    else:
+        con = app.state.db_connection
+        res = query_db(con, invoice_id, Tag.ITEMS)
 
     return res
 
 @app.get("/invoice/{invoice_id}/date", status_code=200) # get invoice date
 async def get_invoice_date(invoice_id: str):
-    con = app.state.db_connection
-    res = query_db(con, invoice_id, Tag.DATE)
+    if invoice_id not in query_column(app.state.db_connection, Tag.INVOICE):
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    else:
+        con = app.state.db_connection
+        res = query_db(con, invoice_id, Tag.DATE)
 
     return res
 
@@ -38,6 +44,13 @@ async def get_invoice_details(invoice_id: str):
     res = query_db(con, invoice_id, Tag.SUMMARY)
 
     return res
+
+# @app.get("/categories/{category_id}/items", status_code=200) # get invoice summary - i.e. address, number, date
+# async def get_invoice_details(invoice_id: str):
+#     con = app.state.db_connection
+#     res = query_db(con, invoice_id, Tag.SUMMARY)
+
+#     return res
 
 # POST APIs
 @app.post("/process_image_inputs/", status_code=201)
