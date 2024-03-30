@@ -7,12 +7,12 @@ from fastapi.testclient import TestClient
 from main import app  # Import FastAPI app instance
 
 # Function to create the dummy SQLite3 database
+
+
 def create_dummy_database():
-    # Creating an in-memory SQLite3 database
-    conn = sqlite3.connect(":memory:")
+    conn = sqlite3.connect(":memory:", check_same_thread=False)
     c = conn.cursor()
 
-    # Creating the invoices table
     c.execute('''CREATE TABLE IF NOT EXISTS invoices (
                     store_name TEXT,
                     address TEXT,
@@ -24,12 +24,11 @@ def create_dummy_database():
                     total_cost REAL
             )''')
 
-    # Inserting some dummy data
     dummy_data = [
         ("Store A", "123 Main St", "123-456-7890",
          "INV001", "2024-03-28", "Product A", 5, 100.00),
         ("Store B", "456 Elm St", "987-654-3210",
-         "INV002", "2024-03-27", "Product B", 3, 150.00),
+         "INV001", "2024-03-27", "Product B", 3, 150.00),
         ("Store C", "789 Oak St", "111-222-3333",
          "INV003", "2024-03-26", "Product C", 2, 75.00)
     ]
@@ -48,17 +47,45 @@ def initialize_app():
 
     conn.close()
 
+
 # GET apis - successes
 def test_get_invoice_items(initialize_app):
     client, conn = initialize_app
-    c = conn.cursor()
+    app.state.db_connection = conn
 
     response = client.get("/invoice/INV001/items")
 
     assert response.status_code == 200
-    assert "invoice_id" in response.json()
+    assert "item_description" in response.json()
+    assert "count" in response.json()
+    assert "total_cost" in response.json()
+
+# GET apis - successes
+def test_get_invoice_date(initialize_app):
+    client, conn = initialize_app
+    app.state.db_connection = conn
+
+    response = client.get("/invoice/INV001/date")
+
+    assert response.status_code == 200
+    assert "date" in response.json()
+
+
+# GET apis - successes
+def test_get_invoice_summary(initialize_app):
+    client, conn = initialize_app
+    app.state.db_connection = conn
+
+    response = client.get("/invoice/INV001/summary")
+
+    assert response.status_code == 200
+    assert "store_name" in response.json()
+    assert "address" in response.json()
+    assert "contact" in response.json()
 
 # POST api - success
+
+
 def test_process_image_inputs_with_file(initialize_app):
     # Prepare a sample image file
     client, conn = initialize_app

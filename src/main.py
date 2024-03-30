@@ -22,20 +22,22 @@ app = FastAPI(lifespan=lifespan)
 async def get_invoice_items(invoice_id: str):
     con = app.state.db_connection
     res = query_db(con, invoice_id, Tag.ITEMS)
-    print(res)
-    return {"invoice_id": invoice_id} # fix return value
+
+    return res
 
 @app.get("/invoice/{invoice_id}/date", status_code=200) # get invoice date
 async def get_invoice_date(invoice_id: str):
     con = app.state.db_connection
     res = query_db(con, invoice_id, Tag.DATE)
-    return {"message": "Hello World"} # fix return value
+
+    return res
 
 @app.get("/invoice/{invoice_id}/summary", status_code=200) # get invoice summary - i.e. address, number, date
 async def get_invoice_details(invoice_id: str):
     con = app.state.db_connection
     res = query_db(con, invoice_id, Tag.SUMMARY)
-    return {"message": "Hello World"} # fix return value
+
+    return res
 
 # POST APIs
 @app.post("/process_image_inputs/", status_code=201)

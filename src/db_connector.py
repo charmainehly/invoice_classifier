@@ -1,3 +1,4 @@
+import json
 import sqlite3
 import pandas as pd
 from tags import Tag
@@ -22,24 +23,23 @@ def close_db(con) -> None:
     con.close()
     return 
 
-def query_db(cur, invoice_id: str, tag: Tag):
+def query_db(con, invoice_id: str, tag: Tag):
+    cur = con.cursor()
     match tag:
         case Tag.ITEMS:
-            res = cur.execute('''SELECT item_description, count, total_cost 
+            cur.execute('''SELECT item_description, count, total_cost 
                         FROM invoices 
                         WHERE invoice_no = ?''', (invoice_id,))
         case Tag.DATE:
-            res = cur.execute('''SELECT date 
+            cur.execute('''SELECT date 
                         FROM invoices 
                         WHERE invoice_no = ?''', (invoice_id,))
         case Tag.SUMMARY:
-            res = cur.execute('''SELECT store_name, address, contact
+            cur.execute('''SELECT store_name, address, contact
                         FROM invoices 
                         WHERE invoice_no = ?''', (invoice_id,))
-
-    print(res.fetchall()) # logging
     
-    return res.fetchall()
+    return convert_to_json(cur.fetchall(), cur)
 
 def insert_db(con, df: pd.DataFrame) -> None:
     cur = con.cursor()
@@ -51,3 +51,18 @@ def insert_db(con, df: pd.DataFrame) -> None:
 
     con.commit()
     return
+
+def convert_to_json(res, cur):
+
+    columns = [desc[0] for desc in cur.description]
+
+    # Convert rows into dictionary format
+    results = []
+    for row in res:
+        result = {}
+        for i, column in enumerate(columns):
+            result[column] = row[i]
+        results.append(result)
+
+    # Serialize the results into JSON
+    return json.dumps(results)
