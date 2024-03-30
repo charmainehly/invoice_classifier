@@ -1,0 +1,13 @@
+from enum import Enum
+
+class Category(Enum):
+    PAYROLL_BENEFITS = 1
+    OFFICE_UTILITIES = 2
+    M_A = 3
+    OFFICE_SUPPLIES = 4
+    TRAVEL_TRANSPORT = 5
+    PROFESSIONAL_SERVICES = 6
+    INSURANCE = 7
+    REPAIRS_MAINTENANCE = 8
+    SOFTWARE_SUBSCRIPTIONS = 9
+    FOOD = 0

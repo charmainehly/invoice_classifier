@@ -1,13 +1,17 @@
 # establishing api endpoints (RESTFUL)
 from fastapi import FastAPI, UploadFile, File, HTTPException, Path, status
+from fastapi.responses import JSONResponse
 from typing import Annotated
 from contextlib import asynccontextmanager
 from ocr import extract_invoice_single
 from llm import parse_to_df
-from fastapi.responses import PlainTextResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from db_connector import query_db, connect_db, close_db, insert_db, query_column
 from tags import Tag
+from fastapi import FastAPI, Request, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 
 # not sure if running
@@ -21,18 +25,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request, exc):
-    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
-
 # GET APIs
 @app.get("/invoice/{invoice_id}/items", status_code=status.HTTP_200_OK) # get invoice items details
 async def get_invoice_items(invoice_id: Annotated[str, Path(title="The ID of the invoice to get")]):
     if invoice_id not in query_column(app.state.db_connection, Tag.INVOICE):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice not found")
-    else:
-        con = app.state.db_connection
-        res = query_db(con, invoice_id, Tag.ITEMS)
+
+    con = app.state.db_connection
+    res = query_db(con, invoice_id, Tag.ITEMS)
 
     return res
 
@@ -40,9 +40,9 @@ async def get_invoice_items(invoice_id: Annotated[str, Path(title="The ID of the
 async def get_invoice_date(invoice_id: Annotated[str, Path(title="The ID of the invoice to get")]):
     if invoice_id not in query_column(app.state.db_connection, Tag.INVOICE):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice not found")
-    else:
-        con = app.state.db_connection
-        res = query_db(con, invoice_id, Tag.DATE)
+
+    con = app.state.db_connection
+    res = query_db(con, invoice_id, Tag.DATE)
 
     return res
 
@@ -50,9 +50,9 @@ async def get_invoice_date(invoice_id: Annotated[str, Path(title="The ID of the 
 async def get_invoice_details(invoice_id: Annotated[str, Path(title="The ID of the invoice to get")]):
     if invoice_id not in query_column(app.state.db_connection, Tag.INVOICE):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice not found")
-    else:
-        con = app.state.db_connection
-        res = query_db(con, invoice_id, Tag.SUMMARY)
+
+    con = app.state.db_connection
+    res = query_db(con, invoice_id, Tag.SUMMARY)
 
     return res
 
