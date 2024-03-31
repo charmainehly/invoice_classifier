@@ -1,6 +1,9 @@
+# kiv
 from enum import Enum
 
+
 class Category(Enum):
+    FOOD = 0
     PAYROLL_BENEFITS = 1
     OFFICE_UTILITIES = 2
     M_A = 3
@@ -10,4 +13,21 @@ class Category(Enum):
     INSURANCE = 7
     REPAIRS_MAINTENANCE = 8
     SOFTWARE_SUBSCRIPTIONS = 9
-    FOOD = 0
+    OFFICE_SUPPLIES_2 = 10
+
+    def to_str(self):
+        mapping_list = ['Food', 'Payroll & Benefits', 'Office & Utilities', 'Marketing & Advertising',
+                        'Office Supplies & Equipment', 'Travel & Transport',
+                        'Professional Services', 'Insurance', 'Repairs & Maintenance',
+                        'Software & Subscriptions', 'Office Supplies & Equip.']
+        return mapping_list[self.value]
+
+    def to_enum(string: str):
+        mapping_list = ['Food', 'Payroll & Benefits', 'Office & Utilities', 'Marketing & Advertising',
+                        'Office Supplies & Equipment', 'Travel & Transport',
+                        'Professional Services', 'Insurance', 'Repairs & Maintenance',
+                        'Software & Subscriptions', 'Office Supplies & Equip.']
+        
+        return Category(mapping_list.index("orange"))
+
+

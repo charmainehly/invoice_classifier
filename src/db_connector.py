@@ -2,6 +2,7 @@ import json
 import sqlite3
 import pandas as pd
 from tags import Tag
+from categories import Category
 
 def connect_db():
     con = sqlite3.connect("invoices.db")
@@ -14,7 +15,8 @@ def connect_db():
                     date TEXT,
                     item_description TEXT,
                     count REAL,
-                    total_cost REAL
+                    total_cost REAL,
+                    category INTEGER
             )''')
     con.commit()
     return con
@@ -23,11 +25,20 @@ def close_db(con) -> None:
     con.close()
     return 
 
+def query_category_items(con, cat_id):
+    cur = con.cursor()
+    
+    cur.execute('''SELECT item_description, count, total_cost
+                            FROM invoices 
+                            WHERE category = ?''', (cat_id,))
+    
+    return convert_to_json(cur.fetchall(), cur)
+
 def query_db(con, invoice_id: str, tag: Tag):
     cur = con.cursor()
     match tag:
         case Tag.ITEMS:
-            cur.execute('''SELECT item_description, count, total_cost 
+            cur.execute('''SELECT item_description, count, total_cost, category
                         FROM invoices 
                         WHERE invoice_no = ?''', (invoice_id,))
         case Tag.DATE:
@@ -44,10 +55,10 @@ def query_db(con, invoice_id: str, tag: Tag):
 def insert_db(con, df: pd.DataFrame) -> None:
     cur = con.cursor()
     for index, row in df.iterrows():
-        cur.execute('''INSERT INTO invoices (store_name, address, contact, invoice_no, date, item_description, count, total_cost)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
+        cur.execute('''INSERT INTO invoices (store_name, address, contact, invoice_no, date, item_description, count, total_cost, category)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
                     (row['Store Name'], row['Address'], row['Contact'], row['Invoice No.'], 
-                    row['Date'], row['Item Description'], row['Count'], row['Total Cost']))
+                    row['Date'], row['Item Description'], row['Count'], row['Total Cost'], row['category']))
 
     con.commit()
     return

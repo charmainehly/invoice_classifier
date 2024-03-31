@@ -5,13 +5,10 @@ from typing import Annotated
 from contextlib import asynccontextmanager
 from ocr import extract_invoice_single
 from llm import parse_to_df
-from db_connector import query_db, connect_db, close_db, insert_db, query_column
+from db_connector import query_db, connect_db, close_db, insert_db, query_column, query_category_items
 from tags import Tag
 from fastapi import FastAPI, Request, status
-from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from ml_model import predict
 
 
 # not sure if running
@@ -56,12 +53,16 @@ async def get_invoice_details(invoice_id: Annotated[str, Path(title="The ID of t
 
     return res
 
-@app.get("/categories/{category_id}/items", status_code=status.HTTP_200_OK) # get all items within a category
-async def get_invoice_details(category_id: Annotated[str, Path(title="The ID of the category to get")]):
-    # TODO
-#     con = app.state.db_connection
-#     res = query_db(con, invoice_id, Tag.SUMMARY)
-    pass
+@app.get("/categories/{category_id}/items", status_code=status.HTTP_200_OK) # get all items within a category (ids from 0-10)
+async def get_invoice_details(category_id: Annotated[int, Path(title="The ID of the category to get")]):
+    if int(category_id) not in range(0, 11):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+
+    con = app.state.db_connection
+    res = query_category_items(con, category_id)
+
+    return res
+
 
 # POST APIs
 @app.post("/process_image_inputs/", status_code=status.HTTP_201_CREATED)
@@ -73,8 +74,9 @@ async def process_image_inputs(file: UploadFile = File(...)):
     else:
         txt = extract_invoice_single(contents)
         summary = parse_to_df(txt)
-        insert_db(app.state.db_connection, summary)
+        complete = predict(summary)
+        insert_db(app.state.db_connection, complete)
 
-        return {"invoice_id": summary['Store Name'][0],
+        return {"invoice_id": complete['Store Name'][0],
                 "detail": "Created Successfully."}
     
