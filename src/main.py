@@ -77,6 +77,6 @@ async def process_image_inputs(file: UploadFile = File(...)):
         complete = predict(summary)
         insert_db(app.state.db_connection, complete)
 
-        return {"invoice_id": complete['Invoice No.'][0],
+        return {"invoice_id": str(complete['Invoice No.'][0]),
                 "detail": "Created Successfully."}
     
