@@ -54,7 +54,7 @@ async def get_invoice_details(invoice_id: Annotated[str, Path(title="The ID of t
     return res
 
 @app.get("/categories/{category_id}/items", status_code=status.HTTP_200_OK) # get all items within a category (ids from 0-10)
-async def get_invoice_details(category_id: Annotated[int, Path(title="The ID of the category to get")]):
+async def get_category_items(category_id: Annotated[int, Path(title="The ID of the category to get")]):
     if int(category_id) not in range(0, 11):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
 
