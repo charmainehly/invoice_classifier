@@ -34,14 +34,10 @@ def train_random_forest():
 
     # Save the fitted vectorizer
     joblib.dump(desc_vectorizer, 'vectorizer.pkl')
-
-    with open("random_forest_model.pkl", "wb") as file:
-        pickle.dump(rf, file)
-
+    joblib.dump(rf, 'random_forest_model.pkl')
 
 def predict(summary: pd.DataFrame) -> pd.DataFrame:
-    with open("random_forest_model.pkl", "rb") as file:
-        rf = pickle.load(file)
+    rf = joblib.load('random_forest_model.pkl')
 
     desc_vectorizer = joblib.load('vectorizer.pkl')
 
