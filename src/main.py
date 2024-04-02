@@ -7,7 +7,7 @@ from ocr import extract_invoice_single
 from llm import parse_to_df
 from db_connector import query_db, connect_db, close_db, insert_db, query_column, query_category_items
 from tags import Tag
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, status
 from ml_model import predict
 
 @asynccontextmanager
