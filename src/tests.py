@@ -1,14 +1,16 @@
 import pytest
 import sqlite3
+import json
 import os
 import numpy as np
 from fastapi.testclient import TestClient
 from main import app  # Import FastAPI app instance
 
+
 def create_dummy_database():
     conn = sqlite3.connect(":memory:", check_same_thread=False)
     c = conn.cursor()
-    
+
     c.execute('DROP TABLE IF EXISTS invoices')
 
     c.execute('''CREATE TABLE IF NOT EXISTS invoices (
@@ -22,7 +24,7 @@ def create_dummy_database():
                     total_cost REAL,
                     category INTEGER
             )''')
-    
+
     dummy_data = [
         ("Store A", "123 Main St", "123-456-7890",
          "INV001", "2024-03-28", "Product A", 5, 100.00, 0),
@@ -32,10 +34,12 @@ def create_dummy_database():
          "INV003", "2024-03-26", "Product C", 2, 75.00, 0)
     ]
 
-    c.executemany('INSERT INTO invoices VALUES (?,?,?,?,?,?,?,?,?)', dummy_data)
+    c.executemany(
+        'INSERT INTO invoices VALUES (?,?,?,?,?,?,?,?,?)', dummy_data)
 
     conn.commit()
     return conn
+
 
 @pytest.fixture(scope="session", autouse=True)
 def initialize_app():
@@ -53,13 +57,17 @@ def test_get_invoice_items_200(initialize_app):
 
     response = client.get("/invoice/INV001/items")
 
-    print(response.json)
-
     assert response.status_code == 200
-    assert "item_description" in response.json()
-    assert "count" in response.json()
-    assert "total_cost" in response.json()
-    assert "category" in response.json()
+
+    response_json = json.loads(response.json())
+    expected_values = [{"item_description": "Product A", "count": 5.0, "total_cost": 100.0, "category": 0},
+                       {"item_description": "Product B", "count": 3.0, "total_cost": 150.0, "category": 0}]
+    expected_keys = ["item_description", "count", "total_cost", "category"]
+
+    for index, item in enumerate(response_json):
+        for key in expected_keys:
+            assert key in response_json[index]
+            assert item[key] == expected_values[index][key]
 
 # GET apis - fail (404)
 def test_get_invoice_item_404(initialize_app):
@@ -80,6 +88,14 @@ def test_get_invoice_date_200(initialize_app):
     assert response.status_code == 200
     assert "date" in response.json()
 
+# GET apis - fail (404)
+def test_get_invoice_date_404(initialize_app):
+    client, conn = initialize_app
+    app.state.db_connection = conn
+
+    response = client.get("/invoice/404/date")
+
+    assert response.status_code == 404
 
 # GET apis - success
 def test_get_invoice_summary_200(initialize_app):
@@ -93,6 +109,15 @@ def test_get_invoice_summary_200(initialize_app):
     assert "address" in response.json()
     assert "contact" in response.json()
 
+# GET apis - fail (404)
+def test_get_invoice_summary_404(initialize_app):
+    client, conn = initialize_app
+    app.state.db_connection = conn
+
+    response = client.get("/invoice/404/summary")
+
+    assert response.status_code == 404
+
 # GET apis - success
 def test_get_category_items(initialize_app):
     client, conn = initialize_app
@@ -104,6 +129,15 @@ def test_get_category_items(initialize_app):
     assert "item_description" in response.json()
     assert "count" in response.json()
     assert "total_cost" in response.json()
+
+# GET apis - fail (404)
+def test_get_category_items_404(initialize_app):
+    client, conn = initialize_app
+    app.state.db_connection = conn
+
+    response = client.get("/category/404/items")
+
+    assert response.status_code == 404
 
 # POST api - success
 def test_process_image_inputs_with_file(initialize_app):
@@ -119,6 +153,17 @@ def test_process_image_inputs_with_file(initialize_app):
 
     assert response.status_code == 201
     assert "invoice_id" in response.json()
+
+# POST apis - fail (422)
+def test_get_category_items_422(initialize_app):
+    client, conn = initialize_app
+
+    response = client.post("/process_image_inputs/", files=None)
+
+    json_response = response.json()
+
+    assert response.status_code == 422
+    assert json_response['detail'][0]['msg'] == "Field required"
 
 
 if __name__ == "__main__":

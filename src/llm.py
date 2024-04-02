@@ -6,11 +6,9 @@ import openai
 import pandas as pd
 from dotenv import load_dotenv
 from io import StringIO
-import uuid
 
 load_dotenv()
 openai.api_key = os.getenv('API_KEY')
-
 
 def format_raw_text(prompt: str) -> str:
     response = openai.ChatCompletion.create(

@@ -10,8 +10,6 @@ from tags import Tag
 from fastapi import FastAPI, Request, status
 from ml_model import predict
 
-
-# not sure if running
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
