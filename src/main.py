@@ -70,10 +70,10 @@ async def process_image_inputs(file: UploadFile = File(...)):
     if not file:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Bad Request")
     else:
-        txt = extract_invoice_single(contents)
-        summary = parse_to_df(txt)
-        complete = predict(summary)
-        insert_db(app.state.db_connection, complete)
+        txt = extract_invoice_single(contents) # run OCR
+        summary = parse_to_df(txt) # run LLM
+        complete = predict(summary) # run ML Model
+        insert_db(app.state.db_connection, complete) # store final results to database
 
         return {"invoice_id": str(complete['Invoice No.'][0]),
                 "detail": "Created Successfully."}

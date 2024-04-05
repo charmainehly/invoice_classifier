@@ -1,10 +1,23 @@
 import pytest
+import pandas as pd
 import sqlite3
 import json
 import os
 from fastapi.testclient import TestClient
 from main import app  # Import FastAPI app instance
 
+# MOCKED METHODS WITH PYTEST-MOCK
+@pytest.fixture
+def mock_extract_invoice_single(mocker):
+    return mocker.patch("ocr.extract_invoice_single")
+
+@pytest.fixture
+def mock_parse_to_df(mocker):
+    return mocker.patch("llm.parse_to_df")
+
+@pytest.fixture
+def mock_predict(mocker):
+    return mocker.patch("ml_model.predict")
 
 def create_dummy_database():
     conn = sqlite3.connect(":memory:", check_same_thread=False)
@@ -140,6 +153,31 @@ def test_get_category_items_404(initialize_app):
 
 # POST api - success
 def test_process_image_inputs_with_file(initialize_app):
+    mock_extract_invoice_single.return_value = {"mocked_data": '''
+                                                                Tech Treasures
+
+                                                                ‘94th Ave, Code Cove, TT
+
+                                                                108-109-110
+                                                                Receipt: 55478 Date: 07/01/2021
+
+                                                                ‘S.No tem Description Items Cost.
+
+                                                                1 Legal Consultation 1 300.00
+
+                                                                2 ‘AccountingServices 1 250.00
+
+                                                                3 Web Development 1 1000.00
+
+                                                                5.15
+                                                                115
+                                                                115
+
+                                                                1299.10
+                                                                '''}
+    mock_parse_to_df.return_value = {"mocked_data": pd.read_csv('../datasets/validation/mocked_output_parse_to_df')}
+    mock_predict.return_value = {"mocked_data": pd.read_csv('../datasets/validation/mocked_output_predict')}
+
     # Prepare a sample image file
     client, conn = initialize_app
     image_path = os.path.join("../datasets", "sample_images", "sample_5.png")
