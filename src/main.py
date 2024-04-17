@@ -4,11 +4,23 @@ from fastapi.responses import JSONResponse
 from typing import Annotated
 from contextlib import asynccontextmanager
 from ocr import extract_invoice_single
-from llm import parse_to_df
 from db_connector import query_db, connect_db, close_db, insert_db, query_column, query_category_items
 from tags import Tag
 from fastapi import FastAPI, status
 from ml_model import predict
+import collections 
+import sys
+if sys.version_info.major == 3 and sys.version_info.minor >= 10:
+    from collections.abc import MutableSet
+    from collections.abc import MutableMapping
+
+    collections.MutableSet = collections.abc.MutableSet
+    collections.MutableMapping = collections.abc.MutableMapping
+else: 
+    from collections import MutableSet
+    from collections import MutableMapping
+
+from llm import parse_to_df
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -77,4 +89,11 @@ async def process_image_inputs(file: UploadFile = File(...)):
 
         return {"invoice_id": str(complete['Invoice No.'][0]),
                 "detail": "Created Successfully."}
-    
+
+import subprocess
+import sys
+subprocess.check_call([sys.executable, "-m", "pip", "install", "openai==0.28"])
+
+if __name__ == "__main__":
+    command = 'uvicorn main:app --reload'
+    result = subprocess.run(command, shell=True, check=True, text=True, stdout=subprocess.PIPE)

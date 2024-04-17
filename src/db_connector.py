@@ -4,6 +4,7 @@ import pandas as pd
 from tags import Tag
 from categories import Category
 
+
 def connect_db():
     con = sqlite3.connect("invoices.db")
     cur = con.cursor()
@@ -21,18 +22,21 @@ def connect_db():
     con.commit()
     return con
 
+
 def close_db(con) -> None:
     con.close()
-    return 
+    return
+
 
 def query_category_items(con, cat_id):
     cur = con.cursor()
-    
+
     cur.execute('''SELECT item_description, count, total_cost
                             FROM invoices 
                             WHERE category = ?''', (cat_id,))
-    
+
     return convert_to_json(cur.fetchall(), cur)
+
 
 def query_db(con, invoice_id: str, tag: Tag):
     cur = con.cursor()
@@ -44,24 +48,26 @@ def query_db(con, invoice_id: str, tag: Tag):
         case Tag.DATE:
             cur.execute('''SELECT date 
                         FROM invoices 
-                        WHERE invoice_no = ?''', (invoice_id,))
+                        WHERE invoice_no = ? LIMIT 1''', (invoice_id,))
         case Tag.SUMMARY:
             cur.execute('''SELECT store_name, address, contact
                         FROM invoices 
-                        WHERE invoice_no = ?''', (invoice_id,))
-    
+                        WHERE invoice_no = ? LIMIT 1''', (invoice_id,))
+
     return convert_to_json(cur.fetchall(), cur)
+
 
 def insert_db(con, df: pd.DataFrame) -> None:
     cur = con.cursor()
     for index, row in df.iterrows():
         cur.execute('''INSERT INTO invoices (store_name, address, contact, invoice_no, date, item_description, count, total_cost, category)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-                    (row['Store Name'], row['Address'], row['Contact'], row['Invoice No.'], 
-                    row['Date'], row['Item Description'], row['Count'], row['Total Cost'], row['category']))
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                    (row['Store Name'], row['Address'], row['Contact'], row['Invoice No.'],
+                     row['Date'], row['Item Description'], row['Count'], row['Total Cost'], row['category']))
 
     con.commit()
     return
+
 
 def convert_to_json(res, cur):
 
@@ -77,6 +83,7 @@ def convert_to_json(res, cur):
 
     # Serialize the results into JSON
     return json.dumps(results)
+
 
 def query_column(con, tag: Tag):
     cur = con.cursor()
